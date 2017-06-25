@@ -1,0 +1,33 @@
+{
+  "name": "url-shortner-service",
+  "version": "1.0.0",
+  "description": "Implementation of FCC challenge of the same name",
+  "main": "app.js",
+  "scripts": {
+    "test:watch": "nodemon --exec \"npm test\"",
+    "test": "mocha ./app/*.test.js --reporter nyan && mocha ./tests/*.test.js --reporter nyan",
+    "start": "node ./app.js",
+    "start-dev": "nodemon --exec \"npm start\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/noce2/url-shortner-service.git"
+  },
+  "author": "Nsikan Essien",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/noce2/url-shortner-service/issues"
+  },
+  "homepage": "https://github.com/noce2/url-shortner-service#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "mongodb": "^2.2.29"
+  },
+  "devDependencies": {
+    "eslint": "^4.1.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.6.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
+  }
+}
