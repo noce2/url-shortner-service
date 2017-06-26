@@ -51,3 +51,6 @@ node_modules
 data
 draft_items
 mongo_tutorial
+
+# Files specific to my workstyle
+draftCommitMessage.txt

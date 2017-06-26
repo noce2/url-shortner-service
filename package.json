@@ -7,7 +7,7 @@
     "test:watch": "nodemon --exec \"npm test\"",
     "test": "mocha ./app/*.test.js --reporter nyan && mocha ./tests/*.test.js --reporter nyan",
     "start": "node ./app.js",
-    "start-dev": "nodemon --exec \"npm start\""
+    "start:dev": "nodemon --exec \"npm start\""
   },
   "repository": {
     "type": "git",
@@ -21,7 +21,8 @@
   "homepage": "https://github.com/noce2/url-shortner-service#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "mongodb": "^2.2.29"
+    "mongodb": "^2.2.29",
+    "pug": "^2.0.0-rc.2"
   },
   "devDependencies": {
     "eslint": "^4.1.0",
