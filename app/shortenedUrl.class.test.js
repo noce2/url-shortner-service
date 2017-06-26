@@ -11,4 +11,11 @@ describe('Given that the Shortened Url class is available', function(){
       assert.deepStrictEqual(result, ['original','shortened']);
     });
   });
+  describe('When a url of the wrong format is passed to the shorten method', function(){
+    const inputString = 'freecodecamp.com/';
+    it('Should return an object containing property error', function(){
+      const result = Object.keys(ShortenedUrl.shorten(inputString));
+      assert.deepStrictEqual(result, ['error']);
+    });
+  });
 });
