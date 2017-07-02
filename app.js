@@ -19,6 +19,11 @@ myapp.get('/', (req, res) => {
     res.render('index');
 });
 
+myapp.get('/reducirlo/:input', (req, res) => {
+    console.log(req.params.input);
+    res.send(JSON.stringify(ShortenedUrl.shorten(req.params.input)));
+});
+
 // start-up server
 myapp.listen(port, () => {
     console.log(`now listening on ${port}`);

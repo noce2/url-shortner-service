@@ -1,5 +1,5 @@
 /* eslint linebreak-style: ["error", "windows"]*/
-
+const dbConnection = require('./dbConnection').dbConnection;
 function ShortenedUrl(original, shortened, error) {
   this.original = original;
 
@@ -18,8 +18,11 @@ ShortenedUrl.shorten = (input) => {
   const urlRegExpFormat = /((?:(?:https?:\/\/)|(?:(?:www|\w+)\.))\w+\.[a-z](?:\.[a-z])?\/?(?:.+)?)/g
   if (urlRegExpFormat.test(input)) {
     // call the db method that stores this and return a shortened version
-    let shortVersion;
-    return new ShortenedUrl(input, shortVersion);
+    const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
+    const dbRecord = dbConnection.addNew(input, proposedShortVersion);
+    console.log(dbRecord);
+    //return new ShortenedUrl(dbRecord.original, dbRecord.shortened);
+    return new ShortenedUrl(dbRecord.original, dbRecord.shortened);
   } 
   //
   const error = 'invalid url format';
