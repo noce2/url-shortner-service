@@ -39,6 +39,7 @@ describe('DbConnection Tests', function () {
       });
 
     });
+
     describe('given the DB is empty and a document is inserted', function () {
       beforeEach('emptying db', function (done) {
         testDb.dropCollection(testCollection, function (_err){
@@ -48,19 +49,46 @@ describe('DbConnection Tests', function () {
       }, function (err){
         if(err) throw err;
       });
+
+      it('should add the document', function (done){
+        const result = testDbConnection.addNew('www.google.com', '5000');
+        result.then(function (fulfilled){
+          assert.strictEqual(fulfilled.insertedCount, 1);
+          assert.strictEqual(fulfilled.ops[0].original,'www.google.com');
+          assert.strictEqual(fulfilled.ops[0].shortened,'5000');
+          done();
+        }, function (rejected){
+          if (rejected) throw rejected;
+        }); 
+      });
     });
 
-    it('should return a result object indicating that the 1 document was inserted', function (done){
-      const result = testDbConnection.addNew('www.google.com', '5000');
-      result.then(function (fulfilled){
-        assert.strictEqual(fulfilled.insertedCount, 1);
-        assert.strictEqual(fulfilled.ops[0].original,'www.google.com');
-        assert.strictEqual(fulfilled.ops[0].shortened,'5000');
-        done();
-      }, function (rejected){
-        if (rejected) throw rejected;
-      }); 
+    describe('Given the DB contains a url, when the user tries to insert it again', function () {
+      let result;
+      beforeEach('emptying db and adding record', function (done) {
+        testDb.dropCollection(testCollection)
+          .then(function(fulfilled){
+            result = testDbConnection.addNew('www.google.com', '5000');
+            done();
+          })
+          .catch(function (err){
+            throw err;
+          });
+      });
+
+      it('Should not add another document', function (done){
+        const secondResult = testDbConnection.addNew('www.google.com', '5000');
+        secondResult.then(function(fulfilled){
+          assert.strictEqual(fulfilled.insertedCount, 0);
+          done();
+        })
+        .catch(function(err){
+          throw err;
+        })
+      });
     });
+
+    
       
     after('close db', function(done) {
       testDb.close();

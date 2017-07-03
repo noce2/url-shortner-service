@@ -33,6 +33,8 @@ DbConnection.prototype.addNew = function(_original, _shortened) {
         });
     }, function (rejected) {
       if (rejected) throw rejected;
+    }).catch(function (err){
+      throw err;
     });
 };
 
