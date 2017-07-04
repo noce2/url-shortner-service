@@ -51,8 +51,6 @@ DbConnection.prototype.find = function (_shortened){
     .then(function(fulfilledCol){
       return fulfilledCol.findOne({
         shortened: _shortened,
-      }, {
-        fields: { original: 1} 
       })
         .then(function(fulfilledDoc){
           return Promise.resolve(fulfilledDoc);

@@ -46,12 +46,12 @@ describe('DbConnection Tests', function () {
         })
       });
       it('should enter one record in the db when addNew method is called with args', function(done){
-        const collection = testDb.collection(testCollection);
+        // const collection = testDb.collection(testCollection);
         const result = testDbConnection.addNew('www.google.com','5000');
         result.then(function(success){
           assert.strictEqual(success.insertedCount, 1);
           assert.strictEqual(success.ops[0].original, 'www.google.com');
-          assert.strictEqual(success.ops[0].original, 'www.google.com');
+          assert.strictEqual(success.ops[0].shortened, '5000');
           done();
         })
           .catch(function(err){
@@ -62,8 +62,8 @@ describe('DbConnection Tests', function () {
 
     });
 
-    describe('given the database already contains a record', function(){
-      beforeEach('empty Db and add a record', function(){
+    describe('given the database already contains a document', function(){
+      beforeEach('empty Db and add a document', function(){
         return testDb.dropCollection(testCollection)
           .then(function(success){
             return success;
@@ -83,7 +83,7 @@ describe('DbConnection Tests', function () {
             }
           });
       });
-      it('should insert contain another new record when addNew is called', function(done){
+      it('should insert another new document when addNew is called', function(done){
         testDbConnection.addNew('www.freecodecamp.com', '6000')
           .then(function(success){
             assert.strictEqual(success.insertedCount,1,'one document was not inserted');
@@ -97,7 +97,20 @@ describe('DbConnection Tests', function () {
                 throw err;
               });
           });
-      })
+      });
+      it('should return the same document when find is called with the short url', function(done){
+        const result = testDbConnection.find('5000');
+        result
+          .then(function(success){
+            assert.strictEqual(success.original, 'www.google.com', 'did not return right record');
+            assert.strictEqual(success.shortened, '5000', 'did not find right short record');
+            assert.ok(success._id, 'has a mongodb id');
+            done();
+          })
+          .catch(function(err){
+            throw err;
+          });
+      });
     });
     after('close DB connection', function(done){
       testDb.close();
