@@ -16,7 +16,7 @@ function DbConnection(_dbUrl, _dbname, _collectionName) {
   this.collectionName = _collectionName;
 }
 
-DbConnection.prototype.addNew = function(_original, _shortened) {
+DbConnection.prototype.addNew = function (_original, _shortened) {
   const _colName = this.collectionName;
   return this.makeConnection()
     .then(function (fulfilledDb) {
@@ -29,7 +29,7 @@ DbConnection.prototype.addNew = function(_original, _shortened) {
           fulfilledDb.close();
           return Promise.resolve(fulfilled);
         }, function (rejected) {
-
+          throw rejected;
         });
     }, function (rejected) {
       if (rejected) throw rejected;
@@ -40,6 +40,27 @@ DbConnection.prototype.addNew = function(_original, _shortened) {
 
 DbConnection.prototype.makeConnection = function() {
   return MongoClient.connect(this.url);
-}
+};
+
+DbConnection.prototype.find = function (_shortened){
+  const _colName = this.collectionName;
+  return this.makeConnection()
+    .then(function(fulfilledDb){
+      return fulfilledDb.collection(_colName);
+    })
+    .then(function(fulfilledCol){
+      return fulfilledCol.findOne({
+        shortened: _shortened,
+      }, {
+        fields: { original: 1} 
+      })
+        .then(function(fulfilledDoc){
+          return Promise.resolve(fulfilledDoc);
+        })
+        .catch(function(err){
+          throw err;
+        });
+    });
+};
 
 module.exports.DbConnection = DbConnection;

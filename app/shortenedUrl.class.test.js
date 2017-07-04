@@ -18,4 +18,9 @@ describe('Given that the Shortened Url class is available', function(){
       assert.deepStrictEqual(result, ['original', 'error']);
     });
   });
+  describe('When an already inserted url and valid shorturl is passed to the shorten method', function(){
+    const inputString = 'https://www.freecodecamp.com/';
+    it('Should not enter a new document in the db');
+    it('Should return the existing document in the db');
+  });
 });
