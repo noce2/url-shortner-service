@@ -40,16 +40,18 @@ describe('DbConnection Tests', function () {
       beforeEach('empty db', function(){
         // console.log(testDb);
         return testDb.dropCollection(testCollection).catch(function(err){
-          if (!(err.message === 'ns not found')){
+          if (!(err.message === 'ns not found')) {
             throw err;
           } 
         })
       });
-      it('should enter only one record in db when one is inserted', function(done){
+      it('should enter one record in the db when addNew method is called with args', function(done){
         const collection = testDb.collection(testCollection);
         const result = testDbConnection.addNew('www.google.com','5000');
         result.then(function(success){
-          assert(success.insertedCount, 1);
+          assert.strictEqual(success.insertedCount, 1);
+          assert.strictEqual(success.ops[0].original, 'www.google.com');
+          assert.strictEqual(success.ops[0].original, 'www.google.com');
           done();
         })
           .catch(function(err){
@@ -57,8 +59,46 @@ describe('DbConnection Tests', function () {
           });
         
       });
+
     });
 
+    describe('given the database already contains a record', function(){
+      beforeEach('empty Db and add a record', function(){
+        return testDb.dropCollection(testCollection)
+          .then(function(success){
+            return success;
+          }, function(rejection){
+            if(!(err.message === 'ns not found')){
+              throw err;
+            } else {
+              return Promise.resolve('collection not there')
+            }
+          })
+          .then(function(_success){
+            return testDbConnection.addNew('www.google.com','5000');
+          })
+          .catch(function(err){
+            if (!(err.message === 'ns not found')) {
+              throw err;
+            }
+          });
+      });
+      it('should insert contain another new record when addNew is called', function(done){
+        testDbConnection.addNew('www.freecodecamp.com', '6000')
+          .then(function(success){
+            assert.strictEqual(success.insertedCount,1,'one document was not inserted');
+            const currentDocs = testDb.collection(testCollection).find().toArray();
+            currentDocs
+              .then(function(docs){
+                assert.strictEqual(docs.length, 2, 'there aren\'t 2 records in db');
+                done();
+              })
+              .catch(function(err){
+                throw err;
+              });
+          });
+      })
+    });
     after('close DB connection', function(done){
       testDb.close();
       done();
