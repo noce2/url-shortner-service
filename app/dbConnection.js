@@ -18,22 +18,21 @@ function DbConnection(_dbUrl, _dbname, _collectionName) {
 
 DbConnection.prototype.addNew = function (_original, _shortened) {
   const _colName = this.collectionName;
+  let db;
   return this.makeConnection()
     .then(function (fulfilledDb) {
+      db = fulfilledDb;
       const collection = fulfilledDb.collection(_colName);
       return collection.insertOne({
         original: _original,
         shortened: _shortened,
       })
-        .then(function (fulfilled) {
-          fulfilledDb.close();
-          return Promise.resolve(fulfilled);
-        }, function (rejected) {
-          throw rejected;
-        });
-    }, function (rejected) {
-      if (rejected) throw rejected;
-    }).catch(function (err){
+    })
+    .then(function (fulfilled) {
+      db.close();
+      return Promise.resolve(fulfilled);
+    })
+    .catch(function (err){
       throw err;
     });
 };
@@ -44,20 +43,23 @@ DbConnection.prototype.makeConnection = function() {
 
 DbConnection.prototype.find = function (_shortened){
   const _colName = this.collectionName;
+  let db;
   return this.makeConnection()
     .then(function(fulfilledDb){
+      db = fulfilledDb;
       return fulfilledDb.collection(_colName);
     })
     .then(function(fulfilledCol){
       return fulfilledCol.findOne({
         shortened: _shortened,
-      })
-        .then(function(fulfilledDoc){
-          return Promise.resolve(fulfilledDoc);
-        })
-        .catch(function(err){
-          throw err;
-        });
+      }); 
+    })
+    .then(function(fulfilledDoc){
+      db.close();
+      return Promise.resolve(fulfilledDoc);
+    })
+    .catch(function(err){
+      throw err;
     });
 };
 
