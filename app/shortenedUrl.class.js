@@ -1,37 +1,48 @@
 /* eslint linebreak-style: ["error", "windows"]*/
-const dbConnection = require('./dbConnection').dbConnection;
-function ShortenedUrl(original, shortened, error) {
-  this.original = original;
+const DbConnection = require('./dbConnection').DbConnection;
 
-  if(error) {
-    this.error = error;
-  } else {
-    this.shortened = shortened;
-  }
-  
+function ShortenedUrl(_dbUrl, _dbname, _collectionName){
+  this.dbConnection = new DbConnection(_dbUrl, _dbname, _collectionName);
 }
 
-ShortenedUrl.shorten = (input) => {
+ShortenedUrl.prototype.shorten = function (input){
   // Returns a new ShortenedUrl Object
-
+  
   // Checks to see that the input matches the format of a url
-  const urlRegExpFormat = /((?:(?:https?:\/\/)|(?:(?:www|\w+)\.))\w+\.[a-z](?:\.[a-z])?\/?(?:.+)?)/g
+  const urlRegExpFormat = /((?:(?:https?:\/\/)|(?:(?:www|\w+)\.))\w+\.[a-z](?:\.[a-z])?\/?(?:.+)?)/g;
   if (urlRegExpFormat.test(input)) {
     // call the db method that stores this and return a shortened version
     const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
-    const dbRecord = dbConnection.addNew(input, proposedShortVersion);
-    console.log(dbRecord);
+    const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
+    return (dbRecord
+      .then((writeResult) => {
+        return this.output(writeResult.ops[0].original, writeResult.ops[0].shortened, undefined);
+      })
+      .catch((err) => {
+        throw err;
+      })
+    );
     //return new ShortenedUrl(dbRecord.original, dbRecord.shortened);
-    return new ShortenedUrl(dbRecord.original, dbRecord.shortened);
   } 
   //
   const error = 'invalid url format';
-  return new ShortenedUrl(input, undefined, error);
+  return Promise.resolve(this.output(input, undefined, error));
 };
 
 
-ShortenedUrl.original = (input) => {
-    
+ShortenedUrl.prototype.original = function(input) { 
 };
 
+ShortenedUrl.prototype.output = function(original, shortened, error) {
+  let result = {};
+  result.original = original;
+  
+  if(error) {
+    result.error = error;
+  } else {
+    result.shortened = shortened;
+  }
+  console.log(result);
+  return result;
+};
 module.exports.ShortenedUrl = ShortenedUrl;
