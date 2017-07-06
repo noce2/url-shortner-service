@@ -83,8 +83,9 @@ describe('Shortened Url class Tests', function () {
       });
     });
 
-    describe('given a url has been shortened', function(){
+    describe('given a url has been shortened and is stored', function(){
       const previouslyInsertedUrl = 'www.google.com';
+      let resultingShortenedUrl;
       beforeEach('empty Db and add a document', function(){
         return testDb.dropCollection(testCollection)
           .then(function(success){
@@ -98,6 +99,11 @@ describe('Shortened Url class Tests', function () {
           })
           .then(function(_success){
             return testShortenedUrl.shorten(previouslyInsertedUrl);
+          })
+          .then(function(_success){
+            
+            resultingShortenedUrl = _success.shortened;
+                     
           })
           .catch(function(err){
             if (!(err.message === 'ns not found')) {
@@ -139,7 +145,7 @@ describe('Shortened Url class Tests', function () {
               });
           });
       });
-      it('should return the existing shortened url if shorten is called with an original url that already exists in the db', function(done){
+      it.skip('should return the existing shortened url if .shorten is called with an original url that already exists in the db', function(done){
         const shortenedAgain = testShortenedUrl.shorten(previouslyInsertedUrl);
         shortenedAgain
           .then(function(fulfilled){
@@ -152,6 +158,19 @@ describe('Shortened Url class Tests', function () {
             throw err;
           });
       });
+      it('should the return original url if .original is called for a shortened url exists in the db', function(done){
+        
+        const result = testShortenedUrl.original(resultingShortenedUrl);
+        result
+          .then(function(_success){
+            assert.strictEqual(_success.success, previouslyInsertedUrl, 'it did not return the original url');
+            done();
+          })
+          .catch(function(err){
+            throw err;
+          });
+      });
+      
     });
     after('close DB connection', function(done){
       testDb.close();

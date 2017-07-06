@@ -12,6 +12,8 @@ ShortenedUrl.prototype.shorten = function (input){
   const urlRegExpFormat = /((?:(?:https?:\/\/)|(?:(?:www|\w+)\.))\w+\.[a-z](?:\.[a-z])?\/?(?:.+)?)/g;
   if (urlRegExpFormat.test(input)) {
     // call the db method that stores this and return a shortened version
+
+    // check if it already exists
     const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
     const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
     return (dbRecord
@@ -31,6 +33,17 @@ ShortenedUrl.prototype.shorten = function (input){
 
 
 ShortenedUrl.prototype.original = function(input) { 
+  const correspondingDoc = this.dbConnection.find(input);
+  return correspondingDoc
+    .then(function(_success){
+      if(_success === null){
+        return Promise.resolve({error: 'url not found'});
+      }
+      return Promise.resolve({ success: _success.original });
+    })
+    .catch(function(err){
+      throw err;
+    });
 };
 
 ShortenedUrl.prototype.output = function(original, shortened, error) {
