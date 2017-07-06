@@ -139,6 +139,19 @@ describe('Shortened Url class Tests', function () {
               });
           });
       });
+      it('should return the existing shortened url if shorten is called with an original url that already exists in the db', function(done){
+        const shortenedAgain = testShortenedUrl.shorten(previouslyInsertedUrl);
+        shortenedAgain
+          .then(function(fulfilled){
+            return testDb.collection(testCollection).find({ original: previouslyInsertedUrl }).toArray();
+          })
+          .then(function(docs){
+            assert.strictEqual(docs.length, 1, 'more than one entry for the previously inserted url exists');
+            done();
+          }).catch(function(err){
+            throw err;
+          });
+      });
     });
     after('close DB connection', function(done){
       testDb.close();
