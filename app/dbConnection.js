@@ -63,4 +63,25 @@ DbConnection.prototype.find = function (_shortened){
     });
 };
 
+DbConnection.prototype.findOriginal = function (_original){
+  const _colName = this.collectionName;
+  let db;
+  return this.makeConnection()
+    .then(function(fulfilledDb){
+      db = fulfilledDb;
+      return fulfilledDb.collection(_colName);
+    })
+    .then(function(fulfilledCol){
+      return fulfilledCol.findOne({
+        original: _original,
+      }); 
+    })
+    .then(function(fulfilledDoc){
+      db.close();
+      return Promise.resolve(fulfilledDoc);
+    })
+    .catch(function(err){
+      throw err;
+    });
+};
 module.exports.DbConnection = DbConnection;

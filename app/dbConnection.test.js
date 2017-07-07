@@ -73,7 +73,7 @@ describe('DbConnection Tests', () => {
             throw err;
           }
         }));
-      it('should insert another new document when addNew is called', (done) => {
+      it('should insert another new document when .addNew is called', (done) => {
         testDbConnection.addNew('www.freecodecamp.com', '6000')
           .then((success) => {
             assert.strictEqual(success.insertedCount, 1, 'one document was not inserted');
@@ -88,7 +88,7 @@ describe('DbConnection Tests', () => {
               });
           });
       });
-      it('should return the same document when find is called with the short url', (done) => {
+      it('should return the same document when .find is called with the short url', (done) => {
         const result = testDbConnection.find('5000');
         result
           .then((success) => {
@@ -110,6 +110,19 @@ describe('DbConnection Tests', () => {
             done();
           })
           .catch(function(err){
+            throw err;
+          });
+      });
+      it('should return the same document when .findOriginal is called with the original url', (done) => {
+        const result = testDbConnection.findOriginal('www.google.com');
+        result
+          .then((success) => {
+            assert.strictEqual(success.original, 'www.google.com', 'did not return right record');
+            assert.strictEqual(success.shortened, '5000', 'did not find right short record');
+            assert.ok(success._id, 'has a mongodb id');
+            done();
+          })
+          .catch((err) => {
             throw err;
           });
       });
