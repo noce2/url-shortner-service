@@ -9,8 +9,8 @@ const testCollection = 'shortenedUrls';
 const testDbUrl = 'mongodb://localhost:27017/';
 const testShortenedUrl = new ShortenedUrl(testDbUrl, testDbname, testCollection);
 
-describe('Shortened Url class Tests', function () {
-  describe('Given the Shortened Url class is setup correctly', function() {
+describe('Shortened Url class Tests\n', function () {
+  describe('Given the Shortened Url class is setup correctly\n', function() {
     it('should have its own property "url"', function() {
       assert.strictEqual(Object.prototype.hasOwnProperty.call(testShortenedUrl, 'dbConnection'), true);
     });
@@ -28,7 +28,7 @@ describe('Shortened Url class Tests', function () {
     });
   });
 
-  describe('the Shortened Url class functionality tests', function(){
+  describe('the Shortened Url class functionality tests\n', function(){
     let testDb;
     before('create DB connection', function(){
       return MongoClient.connect(testDbUrl + testDbname).then(function(db){
@@ -39,7 +39,7 @@ describe('Shortened Url class Tests', function () {
       });
     });
 
-    describe('given no url has been shortened', function(){
+    describe('given no url has been shortened\n', function(){
       beforeEach('empty db', function(){
         // console.log(testDb);
         return testDb.dropCollection(testCollection).catch(function(err){
@@ -83,10 +83,10 @@ describe('Shortened Url class Tests', function () {
       });
     });
 
-    describe('given a url has been shortened and is stored', function(){
+    describe('given a url has been shortened and is stored\n', function(){
       const previouslyInsertedUrl = 'www.google.com';
       let resultingShortenedUrl;
-      beforeEach('empty Db and add a document', function(){
+      beforeEach('empty Db, adding a document and attaching the corresponding shortened url', function(){
         return testDb.dropCollection(testCollection)
           .then(function(success){
             return success;
@@ -145,7 +145,7 @@ describe('Shortened Url class Tests', function () {
               });
           });
       });
-      it.skip('should return the existing shortened url if .shorten is called with an original url that already exists in the db', function(done){
+      it('should return the existing shortened url if .shorten is called with an original url that already exists in the db', function(done){
         const shortenedAgain = testShortenedUrl.shorten(previouslyInsertedUrl);
         shortenedAgain
           .then(function(fulfilled){
@@ -163,7 +163,7 @@ describe('Shortened Url class Tests', function () {
         const result = testShortenedUrl.original(resultingShortenedUrl);
         result
           .then(function(_success){
-            assert.strictEqual(_success.success, previouslyInsertedUrl, 'it did not return the original url');
+            assert.strictEqual(_success.original, previouslyInsertedUrl, 'it did not return the original url');
             done();
           })
           .catch(function(err){

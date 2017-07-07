@@ -11,14 +11,14 @@ ShortenedUrl.prototype.shorten = function (input){
   // Checks to see that the input matches the format of a url
   const urlRegExpFormat = /((?:(?:https?:\/\/)|(?:(?:www|\w+)\.))\w+\.[a-z](?:\.[a-z])?\/?(?:.+)?)/g;
   if (urlRegExpFormat.test(input)) {
-    // call the db method that stores this and return a shortened version
-
+    // call the db method that stores this and return the output format
+    // return this.dbConnection.collection(this.)
     // check if it already exists
     const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
     const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
     return (dbRecord
       .then((writeResult) => {
-        return this.output(writeResult.ops[0].original, writeResult.ops[0].shortened, undefined);
+        return this.output(writeResult.ops[0].original, writeResult.ops[0].shortened, null);
       })
       .catch((err) => {
         throw err;
@@ -28,18 +28,18 @@ ShortenedUrl.prototype.shorten = function (input){
   } 
   //
   const error = 'invalid url format';
-  return Promise.resolve(this.output(input, undefined, error));
+  return Promise.resolve(this.output(input, null, error));
 };
 
 
 ShortenedUrl.prototype.original = function(input) { 
   const correspondingDoc = this.dbConnection.find(input);
   return correspondingDoc
-    .then(function(_success){
+    .then((_success) => {
       if(_success === null){
-        return Promise.resolve({error: 'url not found'});
+        return Promise.resolve(this.output(null, null, 'no url found'));
       }
-      return Promise.resolve({ success: _success.original });
+      return Promise.resolve(this.output(_success.original, _success.shortened, null));
     })
     .catch(function(err){
       throw err;
