@@ -14,17 +14,32 @@ ShortenedUrl.prototype.shorten = function (input){
     // call the db method that stores this and return the output format
     // return this.dbConnection.collection(this.)
     // check if it already exists
-    const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
-    const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
-    return (dbRecord
-      .then((writeResult) => {
-        return this.output(writeResult.ops[0].original, writeResult.ops[0].shortened, null);
+    return this.dbConnection.findOriginal(input)
+      .then((fulfilled) => {
+        
+        if(fulfilled){
+          
+          return Promise.resolve(this.output(fulfilled.original, fulfilled.shortened, null));
+        }
+        // i.e it came back as null just pass it on
+        return fulfilled;
+      })
+      .then((nextFulfilled) => {
+        if (!nextFulfilled){
+          // nextFulfilled is null so get a new short url
+          const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
+          const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
+          return (dbRecord
+            .then((writeResult) => {
+              return this.output(writeResult.ops[0].original, writeResult.ops[0].shortened, null);
+            })
+          );
+        }
+        return nextFulfilled;
       })
       .catch((err) => {
         throw err;
-      })
-    );
-    //return new ShortenedUrl(dbRecord.original, dbRecord.shortened);
+      });
   } 
   //
   const error = 'invalid url format';
@@ -55,7 +70,7 @@ ShortenedUrl.prototype.output = function(original, shortened, error) {
   } else {
     result.shortened = shortened;
   }
-  console.log(result);
+  // console.log(result);
   return result;
 };
 module.exports.ShortenedUrl = ShortenedUrl;

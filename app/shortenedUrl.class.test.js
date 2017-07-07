@@ -152,13 +152,14 @@ describe('Shortened Url class Tests\n', function () {
             return testDb.collection(testCollection).find({ original: previouslyInsertedUrl }).toArray();
           })
           .then(function(docs){
+            
             assert.strictEqual(docs.length, 1, 'more than one entry for the previously inserted url exists');
             done();
           }).catch(function(err){
             throw err;
           });
       });
-      it('should the return original url if .original is called for a shortened url exists in the db', function(done){
+      it('should return original url if .original is called for a shortened url exists in the db', function(done){
         
         const result = testShortenedUrl.original(resultingShortenedUrl);
         result
