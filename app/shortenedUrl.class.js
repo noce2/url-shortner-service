@@ -1,5 +1,6 @@
 /* eslint linebreak-style: ["error", "windows"]*/
 const DbConnection = require('./dbConnection').DbConnection;
+const shortid = require('shortid');
 
 function ShortenedUrl(_dbUrl, _dbname, _collectionName){
   this.dbConnection = new DbConnection(_dbUrl, _dbname, _collectionName);
@@ -27,7 +28,7 @@ ShortenedUrl.prototype.shorten = function (input){
       .then((nextFulfilled) => {
         if (!nextFulfilled){
           // nextFulfilled is null so get a new short url
-          const proposedShortVersion = Math.floor((Math.random() * 10000))+1;
+          const proposedShortVersion = shortid.generate();
           const dbRecord = this.dbConnection.addNew(input, proposedShortVersion);
           return (dbRecord
             .then((writeResult) => {

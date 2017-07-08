@@ -101,15 +101,15 @@ describe('DbConnection Tests', () => {
             throw err;
           });
       });
-      it('should return \'null\' if the supplied short url is not found', function(done){
+      it('should return \'null\' if the supplied short url is not found', (done) => {
         // using 10001 because it's outside my range of possible shortened urls
         const result = testDbConnection.find('10001');
         result
-          .then(function(success){
+          .then((success) => {
             assert.strictEqual(success, null);
             done();
           })
-          .catch(function(err){
+          .catch(function (err){
             throw err;
           });
       });
