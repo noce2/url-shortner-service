@@ -32,6 +32,7 @@ describe('Server Tests', () => {
       it('should redirect the client to the appropriate original url\n', (done) => {
         testRequest(myapp)
           .get(`/redigirme/${appendedShort}`)
+          .expect('Location', 'http://www.facebook.com')
           .expect(307, done);
       });
     });

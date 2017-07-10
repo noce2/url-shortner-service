@@ -9,7 +9,7 @@ const dbUri = process.env.MONGODB_URI;
 
 const dbUrl = dbUri || 'mongodb://localhost:27017/';
 let dbName;
-if (dbUri){
+if (dbUri) {
   dbName = '';
 } else {
   dbName = 'urlShortenerService';
@@ -17,6 +17,14 @@ if (dbUri){
 
 
 const dbColName = process.env.dbColName || 'shortenedUrls';
+
+function createFullUrl(input) {
+  const tobeAppended = /(https?:\/\/)/
+  if (!tobeAppended.test(input)) {
+    return `http://${input}`;
+  }
+  return input;
+}
 
 // initial settings
 const shortenedUrl = new ShortenedUrl(dbUrl, dbName, dbColName);
@@ -45,12 +53,13 @@ myapp.get('/reducirlo/:input', (req, res) => {
 myapp.get('/redigirme/:input', (req, res) => {
   shortenedUrl.original(req.params.input)
     .then((fulfilled) => {
-      if(fulfilled.shortened){
-        res.redirect(307, fulfilled.original);
+      if(fulfilled.shortened) {
+        console.log(createFullUrl(fulfilled.original));
+        res.redirect(307, createFullUrl(fulfilled.original));
       } else {
         res.json(fulfilled);
       }
-      
+
     }).catch((err) => {
       if (err) throw err;
     });
@@ -62,4 +71,3 @@ myapp.listen(port, () => {
 });
 
 module.exports.myapp = myapp;
-
