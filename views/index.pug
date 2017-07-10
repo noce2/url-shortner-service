@@ -20,3 +20,26 @@ html
         div(class='container')
             h1 Welcome To My Url Shortner Service
             h2 How To Use
+            p 
+                | The API can be accessed by going to /reducirlo/ and 
+                | appending the url you want to shorten as a plain string
+            p 
+                | The server will respond with a JSON containing the appended url
+                | and either a shortened url (if the appended url format is valid)
+                | or an error message (if the url formal is invalid)
+            p 
+                | The original url can be retrieved by visiting /redigirme/ and
+                | appending the shortened url. if it is valid, the server will
+                | redirect the client to the original address. \n
+                | If the supplied short url is not valid, a JSON reponse will be 
+                | sent to the client, which contains an error message.
+
+            h3 Example Usage
+            p 
+                |  <em>Request</em>: https://peaceful-plateau-43164.herokuapp.com/reducirlo/insertyoururlhere
+            p  
+                |  <em>Response</em>: {"original":"","shortened":""}
+            p 
+                |  <em>Request</em>: https://peaceful-plateau-43164.herokuapp.com/redigirme/someinvalidshorturl
+            p  
+                |  <em>Response</em>: {"original":"null","shortened":"no url found"}
