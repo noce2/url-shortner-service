@@ -5,8 +5,17 @@ const path = require('path');
 const ShortenedUrl = require('./app/shortenedUrl.class').ShortenedUrl;
 
 const myapp = express();
-const dbUrl = process.env.dbUrl || 'mongodb://localhost:27017/';
-const dbName = process.env.dbName || 'urlShortenerService';
+const dbUri = process.env.MONGODB_URI;
+
+const dbUrl = dbUri || 'mongodb://localhost:27017/';
+let dbName;
+if (dbUri){
+  dbName = '';
+} else {
+  dbName = 'urlShortenerService';
+}
+
+
 const dbColName = process.env.dbColName || 'shortenedUrls';
 
 // initial settings
