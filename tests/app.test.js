@@ -1,16 +1,51 @@
 /* eslint linebreak-style: ["error", "windows"]*/
 
 const testRequest = require('supertest');
-const expect = require('expect.js');
-const myapp = require('../app.js');
+const expectJS = require('expect.js');
+const myapp = require('../app.js').myapp;
 
 describe('Server Tests', () => {
   describe('Normal Functionality Tests', () => {
+    describe('When the client visits /', () => {
+      it('should serve an html page in the body', (done) => {
+        testRequest(myapp)
+          .get('/')
+          .expect('Content-Type', 'text/html; charset=utf-8')
+          .expect(200, done);
+      });
+    });
     describe('When the client visits /reducirlo/ with an appended url after', () => {
-      it('should return an object containing the supplied and generated shorturl');
-    });  
-    describe('When the client visits /reducirlo/ with an appended url after', () => {
-      it('should return an object containing the supplied and generated shorturl');
-    });   
+      const appendedUrl = 'www.facebook.com';
+      const responseType = /json/;
+      it('should return the appended url and a shortened url\n', (done) => {
+        testRequest(myapp)
+          .get(`/reducirlo/${appendedUrl}`)
+          .expect('Content-Type', responseType)
+          .expect((res) => {
+            expectJS(res.body).to.have.keys('original', 'shortened');
+          })
+          .expect(200, done);
+      });
+    });
+    describe('when the client visits /redigirme/ with an appended shorturl that exists', () => {
+      const appendedShort = 'r1HsLYxSZ';
+      it('should redirect the client to the appropriate original url\n', (done) => {
+        testRequest(myapp)
+          .get(`/redigirme/${appendedShort}`)
+          .expect(307, done);
+      });
+    });
+    describe('when the client visits /redigirme/ with an appended shorturl that does not exist', () => {
+      const appendedShort = 'r1HsLYxS';
+      it('should send a json response containing the original and an error\n', (done) => {
+        testRequest(myapp)
+          .get(`/redigirme/${appendedShort}`)
+          .expect('Content-Type', /json/)
+          .expect((res) => {
+            expectJS(res.body).to.have.keys('original', 'error');
+          })
+          .expect(200, done);
+      });
+    });
   });
 });

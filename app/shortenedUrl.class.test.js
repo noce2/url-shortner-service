@@ -81,6 +81,52 @@ describe('Shortened Url class Tests\n', function () {
           });
         
       });
+      it('should not create a shortened url and not add anything to the db when an empty string is passed', function(done){
+        // const collection = testDb.collection(testCollection);
+        const invalidUrl = '';
+        const result = testShortenedUrl.shorten(invalidUrl);
+        // console.log(result);
+        result.then(function(success){
+          
+          assert.strictEqual(success.original, '', 'did not store test url');
+          assert(success.error, 'no generated error message');
+          assert(!success.shortened, 'shortened property is present');
+          done();
+        })
+          .catch(function(err){
+            throw err;
+          });
+        
+      });
+      it('should not create a shortened url and not add anything to the db when undefined is passed', function(done){
+        // const collection = testDb.collection(testCollection);
+        const invalidUrl = undefined;
+        const result = testShortenedUrl.shorten(invalidUrl);
+        // console.log(result);
+        result.then(function(success){
+          
+          assert.strictEqual(success.original, undefined, 'did not store test url');
+          assert(success.error, 'no generated error message');
+          assert(!success.shortened, 'shortened property is present');
+          done();
+        })
+          .catch(function(err){
+            throw err;
+          });
+        
+      });
+      it('should return a json containing an error message and original property = null if .shorten is called for a url that does not exist', function(done){
+        result = testShortenedUrl.original('iDontExist');
+        result
+          .then(function(success){
+            assert.strictEqual(success.original, null, 'did not return null for non-existent original url');
+            assert.strictEqual(success.error, 'no url found', 'did not return the right error message');
+            done();
+          })
+          .catch(function(err){
+            throw err;
+          });
+      });
     });
 
     describe('given a url has been shortened and is stored\n', function(){

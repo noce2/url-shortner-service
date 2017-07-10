@@ -24,7 +24,27 @@ myapp.get('/', (req, res) => {
 });
 
 myapp.get('/reducirlo/:input', (req, res) => {
-    
+  shortenedUrl.shorten(req.params.input)
+    .then((fulfilled) => {
+      res.json(fulfilled);
+    })
+    .catch((err) => {
+      if (err) throw err;
+    });
+});
+
+myapp.get('/redigirme/:input', (req, res) => {
+  shortenedUrl.original(req.params.input)
+    .then((fulfilled) => {
+      if(fulfilled.shortened){
+        res.redirect(307, fulfilled.original);
+      } else {
+        res.json(fulfilled);
+      }
+      
+    }).catch((err) => {
+      if (err) throw err;
+    });
 });
 
 // start-up server
@@ -33,3 +53,4 @@ myapp.listen(port, () => {
 });
 
 module.exports.myapp = myapp;
+
