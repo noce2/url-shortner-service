@@ -29,8 +29,8 @@ html
                 | or an error message (if the url formal is invalid)
             p 
                 | The original url can be retrieved by visiting /redigirme/ and
-                | appending the shortened url. if it is valid, the server will
-                | redirect the client to the original address. \n
+                | appending the shortened url. If it is valid, the server will
+                | redirect the client to the original address. 
                 | If the supplied short url is not valid, a JSON reponse will be 
                 | sent to the client, which contains an error message.
 
@@ -38,7 +38,11 @@ html
             p 
                 |  <em>Request</em>: https://peaceful-plateau-43164.herokuapp.com/reducirlo/insertyoururlhere
             p  
-                |  <em>Response</em>: {"original":"","shortened":""}
+                |  <em>Response</em>: {"original":"yourSubmittedUrl","shortened":"shortenedversion"}
+            p 
+                |  <em>Request</em>: https://peaceful-plateau-43164.herokuapp.com/redigirme/somevalidshorturl
+            p  
+                |  <em>Response</em>: Redirection to the original url
             p 
                 |  <em>Request</em>: https://peaceful-plateau-43164.herokuapp.com/redigirme/someinvalidshorturl
             p  
