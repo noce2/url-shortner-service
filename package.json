@@ -2,6 +2,9 @@
   "name": "url-shortner-service",
   "version": "1.0.0",
   "description": "Implementation of FCC challenge of the same name",
+  "engines": {
+    "node": "^6.11.1"
+  },
   "main": "app.js",
   "scripts": {
     "test:watch": "nodemon --exec \"npm test\"",
