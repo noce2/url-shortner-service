@@ -14,6 +14,7 @@ describe('Server Tests', () => {
           .expect(200, done);
       });
     });
+    let appendedShort;
     describe('When the client visits /reducirlo/ with an appended url after', () => {
       const appendedUrl = 'www.facebook.com';
       const responseType = /json/;
@@ -24,11 +25,14 @@ describe('Server Tests', () => {
           .expect((res) => {
             expectJS(res.body).to.have.keys('original', 'shortened');
           })
+          .expect((res) => {
+            // here I set the appended url to a value ot be used in the test
+            appendedShort = res.body.shortened;
+          })
           .expect(200, done);
       });
     });
     describe('when the client visits /redigirme/ with an appended shorturl that exists', () => {
-      const appendedShort = 'r1HsLYxSZ';
       it('should redirect the client to the appropriate original url\n', (done) => {
         testRequest(myapp)
           .get(`/redigirme/${appendedShort}`)
