@@ -25,7 +25,7 @@
   "homepage": "https://github.com/noce2/url-shortner-service#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "mongodb": "^2.2.29",
+    "mongodb": "^3.1.13",
     "pug": "^2.0.0-rc.2",
     "shortid": "^2.2.8"
   },
